@@ -5,6 +5,10 @@ pipeline {
         }
     }
 
+    tools {
+        git 'Default'
+    }
+
     environment {
         COMPOSE_FILE = 'docker-compose.yml'
     }
