@@ -5,22 +5,23 @@ pipeline {
         }
     }
 
-    tools {
-        git 'Default'
-    }
-
-    environment {
-        COMPOSE_FILE = 'docker-compose.yml'
+    options {
+        skipDefaultCheckout(true)
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']],
+                          userRemoteConfigs: [[url: 'https://github.com/andimuhriffal/spring-docker.git']]])
+            }
+        }
+
         stage('Build and Run Containers') {
             steps {
-                script {
-                    sh 'docker-compose down'
-                    sh 'docker-compose build'
-                    sh 'docker-compose up -d'
-                }
+                sh 'docker-compose down'
+                sh 'docker-compose build'
+                sh 'docker-compose up -d'
             }
         }
 
