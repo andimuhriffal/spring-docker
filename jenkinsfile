@@ -1,0 +1,41 @@
+pipeline {
+    agent {
+        node {
+            label 'ec2-node'
+        }
+    }
+
+    environment {
+        COMPOSE_FILE = 'docker-compose.yml'
+    }
+
+    stages {
+        stage('Checkout Source Code') {
+            steps {
+                git ''
+            }
+        }
+
+        stage('Build and Run Containers') {
+            steps {
+                script {
+                    sh 'docker-compose down'   
+                    sh 'docker-compose build'     
+                    sh 'docker-compose up -d' 
+                }
+            }
+        }
+
+        stage('Verify Containers') {
+            steps {
+                sh 'docker-compose ps'          
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline telah selesai dijalankan di node ec2-node.'
+        }
+    }
+}
